@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天字节是大周还是小周</title>
+</head>
+
+<body>
+    <div class='content'>
+        <div id='content-body'>
+            <!-- <p class="content-text">...</p> -->
+        </div>
+        <div class="foot">
+            <p style='margin-bottom:5px;'>2021年3月31日，周六</p>
+            <p style='margin-bottom:5px;'>有任何建议，联系 1551755561@qq.com</p>
+            <p><a href="https://996.icu" target='_blank' style='text-decoration: none'>Developers' lives matter.</a></p>
+        </div>
+    </div>
+</body>
+
+<style>
+    body {
+        background: #3750c9;
+        margin: 0;
+    }
+
+    #content-body {
+        position: absolute;
+        top: 20vh;
+        width: 100%;
+        text-align: center;
+        color: white;
+        font-size: 3em;
+        z-index:2;
+    }
+    .foot {
+        color: white;
+        font-size: small;
+        position: absolute;
+        bottom: 5vh;
+        text-align: center;
+        width: 100%;
+        z-index:2;
+    }
+
+    .foot a, .foot p{
+        color: white;
+    }
+
+    .content-text{
+        display: inline
+    }
+    /*屏幕在480px到768之间（主要是手机屏幕）*/
+    @media screen and (max-width: 768px) {
+        #content-body{
+            font-size: 2.5em;
+        }
+        .content-text{
+            display: block
+        }
+    }
+</style>
+
+<script>
+    let OFF_DAY = 0
+    let SHIT_DAY = 1
+    let STATUTORY_WORKING_DAY = 2
+
+    function today_text(){
+        let today = new Date()
+        let year_text = today.getFullYear() + "年"
+        let month_text = today.getMonth()+1 +"月"
+        let date_text = today.getDate() + "日"
+        let week_text = "周" + '日一二三四五六'.charAt(today.getDay())
+        return year_text + month_text + date_text + "，" + week_text
+    }
+
+    function get_week_label(){
+        let WEEKS_LABEL = {
+            "2021-3-7": OFF_DAY,
+            "2021-3-14": SHIT_DAY,
+            "2021-3-21": OFF_DAY,
+            "2021-3-28": SHIT_DAY,
+            "2021-4-4": OFF_DAY,
+            "2021-4-11": SHIT_DAY,
+            "2021-4-18": OFF_DAY,
+            "2021-4-25": STATUTORY_WORKING_DAY,
+            "2021-5-2": OFF_DAY,
+            "2021-5-9": OFF_DAY,
+            "2021-5-16": OFF_DAY,
+            "2021-5-23": SHIT_DAY,
+        }
+        let today = new Date()
+        let sunday = today
+        if (today.getDay() != 0){
+            sunday.setDate(today.getDate() + (7-today.getDay()))
+        }
+        let sunday_text = sunday.getFullYear() + "-" + (sunday.getMonth()+1) + "-" + sunday.getDate()
+        console.log("Sunday:", sunday_text)
+        return WEEKS_LABEL[sunday_text]
+    }
+
+    window.onload = function(){
+        let background_color = "#3750c9"
+        let week_label = get_week_label()
+        if (week_label == SHIT_DAY){
+            messages = [
+                "字节这周是大周，",
+                "周日加班。",
+            ]
+            background_color = "#de335e"
+        }
+        else if (week_label == OFF_DAY) {
+            messages = [
+                "字节这周是小周，",
+                "周日不加班～",
+            ]
+            background_color = "#3750c9"
+        }
+        else if (week_label == STATUTORY_WORKING_DAY) {
+            messages = [
+                "字节这周是小周，",
+                "周日是法定工作日。",
+            ]
+            background_color = "#3750c9"
+        }
+        document.getElementsByTagName("body")[0].style.background = background_color
+        let content_dom = document.getElementById("content-body")
+        for (i in messages){
+            let html =document.createElement("p");
+            html.innerHTML = messages[i];
+            html.classList.add("content-text")
+            content_dom.appendChild(html)
+        }
+    }
+</script>
+</html>
